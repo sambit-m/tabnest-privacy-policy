@@ -102,12 +102,72 @@
       height: 150px;
       object-fit: cover;
       display: block;
+      cursor: zoom-in;
     }
     .shot figcaption {
       padding: 8px 10px;
       font-size: 13px;
       color: var(--muted);
       border-top: 1px solid var(--line);
+    }
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(8, 15, 28, 0.86);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      padding: 24px;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox-inner {
+      position: relative;
+      max-width: min(1200px, 94vw);
+      max-height: 92vh;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .lightbox-image {
+      max-width: 100%;
+      max-height: 82vh;
+      border-radius: 12px;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+      background: #fff;
+    }
+    .lightbox-close,
+    .lightbox-prev,
+    .lightbox-next {
+      position: absolute;
+      border: none;
+      border-radius: 999px;
+      width: 42px;
+      height: 42px;
+      cursor: pointer;
+      font-size: 22px;
+      line-height: 1;
+      color: #0f2440;
+      background: rgba(255, 255, 255, 0.95);
+    }
+    .lightbox-close { top: -14px; right: -14px; }
+    .lightbox-prev { left: -16px; top: 50%; transform: translateY(-50%); }
+    .lightbox-next { right: -16px; top: 50%; transform: translateY(-50%); }
+    .lightbox-caption {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -44px;
+      text-align: center;
+      color: #eaf3ff;
+      font-size: 14px;
+    }
+    @media (max-width: 760px) {
+      .lightbox-prev { left: 4px; }
+      .lightbox-next { right: 4px; }
+      .lightbox-close { right: 4px; top: 4px; }
+      .lightbox-caption { bottom: -34px; font-size: 12px; }
     }
     footer { margin-top: 22px; color: #6b7280; font-size: 14px; }
   </style>
@@ -164,23 +224,23 @@
       <h2>Product Screenshots</h2>
       <div class="gallery">
         <figure class="shot">
-          <img src="/tabnest-home/assets/screenshots/screenshot-1-overview.png" alt="TabNest host grouping overview" />
+          <img src="/tabnest-home/assets/screenshots/screenshot-1-overview.png" alt="TabNest host grouping overview" data-shot />
           <figcaption>Overview: hosts grouped across all windows.</figcaption>
         </figure>
         <figure class="shot">
-          <img src="/tabnest-home/assets/screenshots/screenshot-2-search.png" alt="TabNest search by host and tab title" />
+          <img src="/tabnest-home/assets/screenshots/screenshot-2-search.png" alt="TabNest search by host and tab title" data-shot />
           <figcaption>Search: find tabs by host or title instantly.</figcaption>
         </figure>
         <figure class="shot">
-          <img src="/tabnest-home/assets/screenshots/screenshot-3-selection-grouping.png" alt="TabNest select and group selected tabs" />
+          <img src="/tabnest-home/assets/screenshots/screenshot-3-selection-grouping.png" alt="TabNest select and group selected tabs" data-shot />
           <figcaption>Selection: group selected tabs in one click.</figcaption>
         </figure>
         <figure class="shot">
-          <img src="/tabnest-home/assets/screenshots/screenshot-4-actions.png" alt="TabNest quick actions for group and close" />
+          <img src="/tabnest-home/assets/screenshots/screenshot-4-actions.png" alt="TabNest quick actions for group and close" data-shot />
           <figcaption>Actions: group host, close host, close tab.</figcaption>
         </figure>
         <figure class="shot">
-          <img src="/tabnest-home/assets/screenshots/screenshot-5-theme.png" alt="TabNest light and dark themes" />
+          <img src="/tabnest-home/assets/screenshots/screenshot-5-theme.png" alt="TabNest light and dark themes" data-shot />
           <figcaption>Themes: light and dark with saved preference.</figcaption>
         </figure>
       </div>
@@ -190,5 +250,72 @@
       </footer>
     </section>
   </main>
+  <div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-label="Screenshot preview">
+    <div class="lightbox-inner">
+      <button class="lightbox-close" id="lightboxClose" type="button" aria-label="Close preview">×</button>
+      <button class="lightbox-prev" id="lightboxPrev" type="button" aria-label="Previous screenshot">‹</button>
+      <img class="lightbox-image" id="lightboxImage" alt="" />
+      <button class="lightbox-next" id="lightboxNext" type="button" aria-label="Next screenshot">›</button>
+      <div class="lightbox-caption" id="lightboxCaption"></div>
+    </div>
+  </div>
+  <script>
+    (() => {
+      const shots = Array.from(document.querySelectorAll("[data-shot]"));
+      const lightbox = document.getElementById("lightbox");
+      const lightboxImage = document.getElementById("lightboxImage");
+      const lightboxCaption = document.getElementById("lightboxCaption");
+      const closeBtn = document.getElementById("lightboxClose");
+      const prevBtn = document.getElementById("lightboxPrev");
+      const nextBtn = document.getElementById("lightboxNext");
+      let currentIndex = 0;
+
+      function render(index) {
+        const shot = shots[index];
+        if (!shot) return;
+        currentIndex = index;
+        lightboxImage.src = shot.src;
+        lightboxImage.alt = shot.alt || "Screenshot preview";
+        const captionNode = shot.closest(".shot")?.querySelector("figcaption");
+        lightboxCaption.textContent = captionNode ? captionNode.textContent : "";
+      }
+
+      function open(index) {
+        render(index);
+        lightbox.classList.add("open");
+        lightbox.setAttribute("aria-hidden", "false");
+      }
+
+      function close() {
+        lightbox.classList.remove("open");
+        lightbox.setAttribute("aria-hidden", "true");
+      }
+
+      function next() {
+        render((currentIndex + 1) % shots.length);
+      }
+
+      function prev() {
+        render((currentIndex - 1 + shots.length) % shots.length);
+      }
+
+      shots.forEach((shot, index) => {
+        shot.addEventListener("click", () => open(index));
+      });
+
+      closeBtn.addEventListener("click", close);
+      nextBtn.addEventListener("click", next);
+      prevBtn.addEventListener("click", prev);
+      lightbox.addEventListener("click", (event) => {
+        if (event.target === lightbox) close();
+      });
+      document.addEventListener("keydown", (event) => {
+        if (!lightbox.classList.contains("open")) return;
+        if (event.key === "Escape") close();
+        if (event.key === "ArrowRight") next();
+        if (event.key === "ArrowLeft") prev();
+      });
+    })();
+  </script>
 </body>
 </html>
