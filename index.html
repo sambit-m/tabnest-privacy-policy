@@ -11,6 +11,7 @@
   <meta property="og:description" content="Group tabs by host, search fast, select in bulk, and clean up your browser in seconds." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://sambit-m.github.io/tabnest-home/" />
+  <meta property="og:image" content="https://sambit-m.github.io/tabnest-home/assets/screenshots/screenshot-1-overview.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <style>
     :root {
@@ -30,7 +31,20 @@
       background: linear-gradient(135deg, var(--bg1), var(--bg2));
     }
     .wrap { max-width: 1040px; margin: 0 auto; padding: 56px 20px; }
-    .hero { color: #fff; }
+    .hero {
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .hero-logo {
+      width: 68px;
+      height: 68px;
+      border-radius: 18px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.24);
+      border: 2px solid rgba(255, 255, 255, 0.65);
+      background: #fff;
+    }
     .hero h1 { margin: 0 0 12px; font-size: 48px; }
     .hero p { margin: 0; font-size: 20px; opacity: 0.95; }
     .card {
@@ -70,6 +84,31 @@
     }
     .btn-primary { background: var(--accent); color: #fff; }
     .btn-ghost { background: #eef5ff; color: #1b4f91; }
+    .gallery {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+    }
+    .shot {
+      margin: 0;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .shot img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      display: block;
+    }
+    .shot figcaption {
+      padding: 8px 10px;
+      font-size: 13px;
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+    }
     footer { margin-top: 22px; color: #6b7280; font-size: 14px; }
   </style>
   <script type="application/ld+json">
@@ -87,8 +126,11 @@
 <body>
   <main class="wrap">
     <section class="hero">
-      <h1>TabNest</h1>
-      <p>Group tabs by host. Search instantly. Clean up your browser faster.</p>
+      <img class="hero-logo" src="/tabnest-home/assets/logo/tabnest-logo.png" alt="TabNest logo" />
+      <div>
+        <h1>TabNest</h1>
+        <p>Group tabs by host. Search instantly. Clean up your browser faster.</p>
+      </div>
     </section>
 
     <section class="card">
@@ -117,6 +159,30 @@
       <div class="cta">
         <a class="btn btn-primary" href="https://chromewebstore.google.com/" target="_blank" rel="noopener noreferrer">Get TabNest</a>
         <a class="btn btn-ghost" href="/tabnest-home/privacy.html">Privacy Policy</a>
+      </div>
+
+      <h2>Product Screenshots</h2>
+      <div class="gallery">
+        <figure class="shot">
+          <img src="/tabnest-home/assets/screenshots/screenshot-1-overview.png" alt="TabNest host grouping overview" />
+          <figcaption>Overview: hosts grouped across all windows.</figcaption>
+        </figure>
+        <figure class="shot">
+          <img src="/tabnest-home/assets/screenshots/screenshot-2-search.png" alt="TabNest search by host and tab title" />
+          <figcaption>Search: find tabs by host or title instantly.</figcaption>
+        </figure>
+        <figure class="shot">
+          <img src="/tabnest-home/assets/screenshots/screenshot-3-selection-grouping.png" alt="TabNest select and group selected tabs" />
+          <figcaption>Selection: group selected tabs in one click.</figcaption>
+        </figure>
+        <figure class="shot">
+          <img src="/tabnest-home/assets/screenshots/screenshot-4-actions.png" alt="TabNest quick actions for group and close" />
+          <figcaption>Actions: group host, close host, close tab.</figcaption>
+        </figure>
+        <figure class="shot">
+          <img src="/tabnest-home/assets/screenshots/screenshot-5-theme.png" alt="TabNest light and dark themes" />
+          <figcaption>Themes: light and dark with saved preference.</figcaption>
+        </figure>
       </div>
 
       <footer>
